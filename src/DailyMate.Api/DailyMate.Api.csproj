@@ -14,4 +14,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <!-- publish 시 React 앱을 빌드해 wwwroot로 포함 (web 컨테이너 불필요) -->
+  <Target Name="BuildWebApp" BeforeTargets="ComputeFilesToPublish">
+    <Exec Command="npm ci" WorkingDirectory="../web" Condition="!Exists('../web/node_modules')" />
+    <Exec Command="npm run build" WorkingDirectory="../web" />
+    <ItemGroup>
+      <WebDistFiles Include="../web/dist/**" />
+      <ResolvedFileToPublish Include="@(WebDistFiles)" RelativePath="wwwroot/%(RecursiveDir)%(Filename)%(Extension)" CopyToPublishDirectory="PreserveNewest" />
+    </ItemGroup>
+  </Target>
+
 </Project>

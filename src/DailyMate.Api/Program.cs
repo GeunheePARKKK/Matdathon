@@ -6,14 +6,66 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
-var dbPath = Path.Combine(AppContext.BaseDirectory, "dailymate.db");
+// 데이터 디렉토리: 쓰기 가능한 첫 경로 사용 (컨테이너 /app은 읽기 전용일 수 있음)
+static string PickDataDir()
+{
+    var candidates = new[]
+    {
+        Environment.GetEnvironmentVariable("DAILYMATE_DATA"),
+        AppContext.BaseDirectory,
+        Path.GetTempPath(),
+    };
+    foreach (var dir in candidates)
+    {
+        if (string.IsNullOrEmpty(dir)) continue;
+        try
+        {
+            Directory.CreateDirectory(dir);
+            var probe = Path.Combine(dir, $".write-probe-{Guid.NewGuid():N}");
+            File.WriteAllText(probe, "");
+            File.Delete(probe);
+            return dir;
+        }
+        catch { /* 다음 후보 */ }
+    }
+    return Path.GetTempPath();
+}
+
+var dataDir = PickDataDir();
+var dbPath = Path.Combine(dataDir, "dailymate.db");
 builder.Services.AddDbContext<AppDbContext>(o => o.UseSqlite($"Data Source={dbPath}"));
 builder.Services.AddCors(o => o.AddDefaultPolicy(p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+// Aspire 서비스 디스커버리로 agent 프록시용 클라이언트 구성
+builder.Services.AddHttpClient("agent", c => { c.BaseAddress = new Uri("http://agent"); c.Timeout = TimeSpan.FromMinutes(3); });
 
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
 app.UseCors();
+
+// 배포 모드: 빌드된 React 정적 파일 서빙 (같은 오리진 → CORS·프록시 불필요)
+var hasWebRoot = File.Exists(Path.Combine(app.Environment.WebRootPath ?? "", "index.html"));
+if (hasWebRoot)
+{
+    app.UseDefaultFiles();
+    app.UseStaticFiles();
+}
+
+// /agent/* → agent 서비스 프록시 (SSE 스트리밍 지원)
+app.Map("/agent/{**path}", async (HttpContext ctx, IHttpClientFactory factory) =>
+{
+    var client = factory.CreateClient("agent");
+    using var req = new HttpRequestMessage(new HttpMethod(ctx.Request.Method), $"{ctx.Request.Path}{ctx.Request.QueryString}");
+    if (ctx.Request.ContentLength > 0 || ctx.Request.Headers.ContainsKey("Transfer-Encoding"))
+    {
+        req.Content = new StreamContent(ctx.Request.Body);
+        if (ctx.Request.ContentType is { } ct) req.Content.Headers.TryAddWithoutValidation("Content-Type", ct);
+    }
+    using var res = await client.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, ctx.RequestAborted);
+    ctx.Response.StatusCode = (int)res.StatusCode;
+    if (res.Content.Headers.ContentType is { } rct) ctx.Response.ContentType = rct.ToString();
+    await res.Content.CopyToAsync(ctx.Response.Body, ctx.RequestAborted);
+});
 
 using (var scope = app.Services.CreateScope())
 {
@@ -23,7 +75,7 @@ using (var scope = app.Services.CreateScope())
 var json = DiaryRow.Json;
 
 // ── Photos (F2-3 · F3-3) ─────────────────────────────────
-var photosDir = Path.Combine(AppContext.BaseDirectory, "photos");
+var photosDir = Path.Combine(dataDir, "photos");
 Directory.CreateDirectory(photosDir);
 string[] allowedExt = [".jpg", ".jpeg", ".png", ".gif", ".webp"];
 
@@ -160,5 +212,8 @@ app.MapPost("/api/export", async (JsonElement body, AppDbContext db) =>
     var md = $"# {date} 일기\n\n{(string.IsNullOrEmpty(row.EnrichedContent) ? row.RawContent : row.EnrichedContent)}\n";
     return Results.File(System.Text.Encoding.UTF8.GetBytes(md), "text/markdown", $"diary-{date}.md");
 });
+
+// SPA 라우팅 폴백 (배포 모드)
+if (hasWebRoot) app.MapFallbackToFile("index.html");
 
 app.Run();
