@@ -5,7 +5,7 @@ import RoutineCard from '../components/RoutineCard'
 import { useDiaryStore } from '../store/diaryStore'
 import type { ChatMessage, Schedule } from '../types'
 
-type Phase = 'topic' | 'tomorrow' | 'schedule_preview' | 'finished' | 'loading'
+type Phase = 'topic' | 'tomorrow' | 'schedule_preview' | 'finished' | 'loading' | 'error'
 
 export default function AgentChat() {
   const nav = useNavigate()
@@ -85,9 +85,9 @@ export default function AgentChat() {
       }
       scrollDown()
     } catch {
-      setPhase('finished')
+      setPhase('error')
       setStreaming('')
-      setMessages((prev) => [...prev, { role: 'assistant', content: '연결에 문제가 있었어요. 그래도 일기 완성은 가능해요!' }])
+      setMessages((prev) => [...prev, { role: 'assistant', content: '연결에 문제가 있었어요. 아래 버튼으로 다시 시도할 수 있어요.' }])
     }
   }
 
@@ -143,6 +143,7 @@ export default function AgentChat() {
                       type="checkbox"
                       checked={checked[s.id] ?? false}
                       disabled={registered}
+                      aria-label={`${s.title} 일정 선택`}
                       onChange={(e) => setChecked((prev) => ({ ...prev, [s.id]: e.target.checked }))}
                     />
                     <span className="grow">{s.datetime.slice(11, 16)} {s.title}</span>
@@ -168,6 +169,12 @@ export default function AgentChat() {
           </div>
         )}
         {phase === 'loading' && !streaming && <div className="msg agent">🤖 …</div>}
+        {phase === 'error' && (
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button className="btn ghost" style={{ flex: 1 }} onClick={() => runTurn(messages.filter((m) => m.role === 'user' || m.content !== '연결에 문제가 있었어요. 아래 버튼으로 다시 시도할 수 있어요.'))}>다시 시도</button>
+            <button className="btn gray" style={{ flex: 1 }} onClick={() => nav('/complete')}>일기 완성으로</button>
+          </div>
+        )}
         {phase === 'finished' && (
           <button className="btn" onClick={() => nav('/complete')}>일기 완성하기</button>
         )}
@@ -188,7 +195,7 @@ export default function AgentChat() {
           <button className="btn small" onClick={send} disabled={phase === 'loading'}>전송</button>
         </div>
       )}
-      {toast && <div className="toast">{toast}</div>}
+      {toast && <div className="toast" role="status" aria-live="polite">{toast}</div>}
     </>
   )
 }

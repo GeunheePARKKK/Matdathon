@@ -38,10 +38,44 @@ builder.Services.AddCors(o => o.AddDefaultPolicy(p => p.AllowAnyOrigin().AllowAn
 // Aspire 서비스 디스커버리로 agent 프록시용 클라이언트 구성
 builder.Services.AddHttpClient("agent", c => { c.BaseAddress = new Uri("http://agent"); c.Timeout = TimeSpan.FromMinutes(3); });
 
+// 남용 방지: IP당 고정 윈도 레이트 리밋 (읽기 120/분, 쓰기·에이전트 30/분)
+builder.Services.AddRateLimiter(o =>
+{
+    o.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    o.GlobalLimiter = System.Threading.RateLimiting.PartitionedRateLimiter.Create<HttpContext, string>(ctx =>
+    {
+        var ip = ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+        var writeOrAgent = ctx.Request.Method != "GET" || ctx.Request.Path.StartsWithSegments("/agent");
+        return System.Threading.RateLimiting.RateLimitPartition.GetFixedWindowLimiter(
+            $"{ip}:{(writeOrAgent ? "w" : "r")}",
+            _ => new System.Threading.RateLimiting.FixedWindowRateLimiterOptions
+            {
+                PermitLimit = writeOrAgent ? 30 : 120,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0,
+            });
+    });
+});
+// 요청 바디 크기 제한 (사진 업로드 최대 12MB)
+builder.WebHost.ConfigureKestrel(k => k.Limits.MaxRequestBodySize = 12 * 1024 * 1024);
+
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
 app.UseCors();
+app.UseRateLimiter();
+
+// 보안 헤더
+app.Use(async (ctx, next) =>
+{
+    ctx.Response.Headers["X-Content-Type-Options"] = "nosniff";
+    ctx.Response.Headers["X-Frame-Options"] = "DENY";
+    ctx.Response.Headers["Referrer-Policy"] = "no-referrer";
+    ctx.Response.Headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()";
+    ctx.Response.Headers["Content-Security-Policy"] =
+        "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://cdn.jsdelivr.net https://fonts.gstatic.com; script-src 'self'; connect-src 'self'";
+    await next();
+});
 
 // 배포 모드: 빌드된 React 정적 파일 서빙 (같은 오리진 → CORS·프록시 불필요)
 var hasWebRoot = File.Exists(Path.Combine(app.Environment.WebRootPath ?? "", "index.html"));

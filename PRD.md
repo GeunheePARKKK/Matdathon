@@ -43,7 +43,7 @@
 |---|---|---|
 | R1 | 웹 앱으로 개발 | ✅ React + Vite (모바일 우선 반응형) |
 | R2 | GitHub Copilot SDK 사용 | ✅ `GitHub.Copilot.SDK` — CopilotClient로 모델 연결 |
-| R3 | Microsoft Agent Framework 사용 | ✅ `Microsoft.Agents.AI.GitHub.Copilot` — AIAgent 4종 |
+| R3 | Microsoft Agent Framework 사용 | ✅ `Microsoft.Agents.AI.GitHub.Copilot` — AIAgent 3종 + MCP 오케스트레이터 |
 | R4 | Azure 클라우드 배포 | ✅ azd + Aspire → Azure Container Apps |
 | R5 | **로그인/인증 기능 구현 금지** | ✅ 무로그인, 로컬 세션 기반 |
 | R6 | 분산 클라우드 환경(트래픽) 고려 | ✅ Aspire 서비스 분리·헬스체크·OTel |

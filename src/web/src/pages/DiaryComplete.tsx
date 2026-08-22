@@ -140,7 +140,7 @@ export default function DiaryComplete() {
 
         <button className="btn gray" onClick={() => nav('/')}>홈으로 돌아가기</button>
       </div>
-      {toast && <div className="toast">{toast}</div>}
+      {toast && <div className="toast" role="status" aria-live="polite">{toast}</div>}
     </>
   )
 }

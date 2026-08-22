@@ -23,17 +23,29 @@ public sealed class AgentRuntime : IAsyncDisposable
     {
         var runtime = new AgentRuntime();
         var cliPath = Environment.GetEnvironmentVariable("COPILOT_CLI_PATH");
+        var ghToken = Environment.GetEnvironmentVariable("GH_TOKEN");
         var useLlm = Environment.GetEnvironmentVariable("DAILYMATE_LLM") != "off"
-                     && (cliPath is not null || IsOnPath("copilot"));
+                     && (cliPath is not null || !string.IsNullOrWhiteSpace(ghToken) || IsOnPath("copilot"));
         if (!useLlm)
         {
-            logger.LogInformation("Copilot CLI 미탐지 — Mock 모드로 기동합니다.");
+            logger.LogInformation("Copilot CLI/토큰 미탐지 — Mock 모드로 기동합니다.");
             return runtime;
         }
 
         try
         {
-            var client = new CopilotClient(new CopilotClientOptions { UseLoggedInUser = true });
+            var options = new CopilotClientOptions();
+            if (!string.IsNullOrWhiteSpace(ghToken))
+            {
+                options.GitHubToken = ghToken;
+                logger.LogInformation("Copilot 인증: GH_TOKEN 환경 변수 (배포 모드)");
+            }
+            else
+            {
+                options.UseLoggedInUser = true;
+                logger.LogInformation("Copilot 인증: 로그인된 Copilot CLI 세션 (로컬 모드)");
+            }
+            var client = new CopilotClient(options);
             await client.StartAsync();
             runtime._client = client;
 

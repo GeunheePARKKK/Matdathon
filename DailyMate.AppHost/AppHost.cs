@@ -3,10 +3,11 @@ var builder = DistributedApplication.CreateBuilder(args);
 // mcp-tool: 헬스 코치용 MCP 서버 (get_exercises / calc_intensity / build_routine)
 var mcpTool = builder.AddProject<Projects.DailyMate_McpTool>("mcp-tool");
 
-// agent: Microsoft Agent Framework + Copilot SDK (LLM 키 없으면 Mock 모드)
+// agent: Microsoft Agent Framework + Copilot SDK (GH_TOKEN 없으면 Mock 모드)
 var agent = builder.AddProject<Projects.DailyMate_Agent>("agent")
     .WithReference(mcpTool)
     .WaitFor(mcpTool)
+    .WithEnvironment("GH_TOKEN", Environment.GetEnvironmentVariable("GH_TOKEN") ?? "")
     .WithEnvironment("AZURE_OPENAI_ENDPOINT", Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT") ?? "")
     .WithEnvironment("AZURE_OPENAI_KEY", Environment.GetEnvironmentVariable("AZURE_OPENAI_KEY") ?? "")
     .WithEnvironment("NOTION_MCP_TOKEN", Environment.GetEnvironmentVariable("NOTION_MCP_TOKEN") ?? "")

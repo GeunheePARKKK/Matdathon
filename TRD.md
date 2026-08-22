@@ -59,13 +59,13 @@
 - SDK 빌드 타겟이 copilot CLI 바이너리를 산출물에 번들 → 컨테이너 배포에서도 동일하게 동작
 - CLI 미탐지·초기화 실패 시 **Mock 모드로 자동 폴백** ([AgentRuntime.cs](src/DailyMate.Agent/AgentRuntime.cs)) — 시연 안전장치
 
-### 3.2 에이전트 구성 (Agent Framework `AIAgent` 4종)
-| 에이전트 | 구현 | 역할 |
+### 3.2 에이전트 구성 (Agent Framework `AIAgent` 3종 + MCP 오케스트레이터 1종)
+| 구성 요소 | 구현 | 역할 |
 |---|---|---|
 | Triage | `GitHubCopilotAgent` + JSON 강제 인스트럭션 | 운동 발화 분류 + 컨디션 파라미터 추출 (규칙 기반 `MockTriage` 폴백) |
 | Interviewer | `GitHubCopilotAgent` + **tool calling** | 주제별 심화 질문 — `parse_schedule`, `list_topics` AIFunction 도구 호출 |
 | Writer | `GitHubCopilotAgent` + tool calling | 일기 풍부화 — `draft_enrichment` 도구로 결정적 초안 참고 |
-| Health Coach | Triage 결과 → **MCP 툴 체인 오케스트레이션** | `get_exercises → calc_intensity → build_routine` 순차 호출 |
+| Health Coach | 서비스 클래스 — **MCP 툴 체인 오케스트레이터** (AIAgent 아님) | Triage 결과를 받아 `get_exercises → calc_intensity → build_routine` 순차 호출 — 운동 선택·강도·안전 규칙을 LLM이 아닌 결정적 코드로 통제하기 위한 의도적 설계 |
 
 ### 3.3 오케스트레이션·컨텍스트·스트리밍
 - **핸드오프**: 인터뷰 진행 중 루틴 요청 감지 → 헬스 코치로 위임 → 루틴 카드 반환 후 인터뷰 복귀 ([ChatOrchestrator.cs](src/DailyMate.Agent/ChatOrchestrator.cs))
