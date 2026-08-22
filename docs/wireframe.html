@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DailyMate 와이어프레임 v2</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Pretendard', -apple-system, 'Segoe UI', 'Malgun Gothic', sans-serif;
+    background: #f0f2f5;
+    padding: 40px 20px;
+  }
+  h1 { text-align: center; margin-bottom: 8px; color: #333; }
+  .subtitle { text-align: center; color: #888; margin-bottom: 40px; font-size: 14px; }
+  .screens {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  .screen-wrap { text-align: center; }
+  .screen-label { font-weight: 700; color: #555; margin-bottom: 12px; font-size: 15px; }
+  .phone {
+    width: 360px;
+    background: #fff;
+    border: 2px solid #d0d4da;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    min-height: 720px;
+  }
+  .header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 16px;
+    border-bottom: 1px solid #eceff1;
+    font-weight: 700; font-size: 15px;
+    background: #fafbfc;
+  }
+  .header .sub { font-weight: 400; font-size: 12px; color: #999; }
+  .body { flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; }
+  .card {
+    border: 1.5px dashed #b9c0c9;
+    border-radius: 12px;
+    padding: 14px;
+    background: #fafbfd;
+  }
+  .card.solid { border-style: solid; border-color: #dfe4ea; background: #fff; }
+  .section-title { font-size: 12px; font-weight: 700; color: #78838f; margin-bottom: 8px; letter-spacing: .5px; }
+  .btn {
+    display: inline-block;
+    background: #4f6ef7; color: #fff;
+    border-radius: 10px; padding: 10px 18px;
+    font-size: 13px; font-weight: 600;
+    text-align: center;
+  }
+  .btn.ghost { background: #eef1ff; color: #4f6ef7; }
+  .btn.small { padding: 6px 12px; font-size: 12px; }
+  .btn.gray { background: #f1f3f5; color: #555; }
+  .stat-row { display: flex; gap: 8px; }
+  .stat {
+    flex: 1; border: 1.5px solid #dfe4ea; border-radius: 10px;
+    padding: 10px 6px; text-align: center; background: #fff;
+  }
+  .stat .emoji { font-size: 18px; }
+  .stat .label { font-size: 11px; color: #8a93a0; margin-top: 2px; }
+  .stat .value { font-size: 13px; font-weight: 700; margin-top: 2px; }
+  .list-item {
+    display: flex; justify-content: space-between;
+    font-size: 13px; padding: 8px 4px;
+    border-bottom: 1px solid #f0f2f5; color: #444;
+  }
+  .list-item:last-child { border-bottom: none; }
+  .tabbar { display: flex; border-top: 1px solid #eceff1; background: #fafbfc; }
+  .tab { flex: 1; text-align: center; padding: 12px 0; font-size: 11px; color: #98a1ad; }
+  .tab.active { color: #4f6ef7; font-weight: 700; }
+  .tab .icon { font-size: 18px; display: block; margin-bottom: 2px; }
+  /* editor */
+  .editor {
+    border: 1.5px solid #dfe4ea; border-radius: 12px;
+    padding: 14px; min-height: 300px; background: #fffdf7;
+    font-size: 13.5px; line-height: 1.9; color: #3c4450; text-align: left;
+  }
+  .editor .placeholder { color: #b6bec9; }
+  .highlight { border-bottom: 2px solid #ffd54f; background: #fff8e1; padding: 0 2px; border-radius: 3px; }
+  .highlight.blue { border-color: #90caf9; background: #e3f2fd; }
+  .highlight.green { border-color: #a5d6a7; background: #e8f5e9; }
+  .hint {
+    font-size: 11.5px; color: #8a93a0; text-align: left;
+    display: flex; gap: 10px; flex-wrap: wrap;
+  }
+  .hint span { display: inline-flex; align-items: center; gap: 4px; }
+  .dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+  /* chat */
+  .msg { max-width: 82%; padding: 10px 13px; border-radius: 14px; font-size: 13px; line-height: 1.55; text-align: left; }
+  .msg.agent { background: #f1f3f7; color: #333; border-bottom-left-radius: 4px; align-self: flex-start; }
+  .msg.user { background: #4f6ef7; color: #fff; border-bottom-right-radius: 4px; align-self: flex-end; }
+  .chat-col { display: flex; flex-direction: column; gap: 10px; }
+  .quote {
+    font-size: 11.5px; color: #8a93a0; border-left: 3px solid #cfd6df;
+    padding: 2px 8px; margin-bottom: 6px; font-style: italic;
+  }
+  .attach {
+    font-size: 12px; background: #fff; border: 1.5px solid #dfe4ea;
+    border-radius: 8px; padding: 6px 10px; color: #667; display: inline-block; margin-top: 6px;
+  }
+  .input-bar {
+    display: flex; gap: 8px; align-items: center;
+    padding: 10px 12px; border-top: 1px solid #eceff1; background: #fafbfc;
+  }
+  .input-box {
+    flex: 1; border: 1.5px solid #dfe4ea; border-radius: 20px;
+    padding: 9px 14px; font-size: 13px; color: #aab; background: #fff; text-align: left;
+  }
+  .extract-item { display: flex; gap: 8px; font-size: 12.5px; padding: 5px 0; color: #445; text-align: left; }
+  .badge {
+    font-size: 11px; background: #e8f5e9; color: #2e7d32;
+    border-radius: 20px; padding: 3px 10px; font-weight: 700;
+  }
+  .badge.gray { background: #f1f3f5; color: #778; }
+  .badge.blue { background: #e3f2fd; color: #1565c0; }
+  .diary-text { font-size: 13px; line-height: 1.85; color: #3c4450; text-align: left; }
+  .diary-title { font-weight: 700; font-size: 14px; margin-bottom: 8px; text-align: left; }
+  .tags { font-size: 12px; color: #4f6ef7; margin-top: 10px; text-align: left; }
+  .photo-strip { display: flex; gap: 6px; margin-top: 10px; }
+  .photo {
+    flex: 1; height: 64px; background: #eceff3; border: 1.5px solid #dfe4ea;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-size: 20px; color: #aab;
+  }
+  .schedule-item {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; padding: 7px 4px; color: #445;
+    border-bottom: 1px solid #f0f2f5; text-align: left;
+  }
+  .schedule-item:last-child { border-bottom: none; }
+  .checkbox { font-size: 15px; }
+  .enrich-note {
+    font-size: 11.5px; color: #667; background: #eef1ff;
+    border-radius: 8px; padding: 8px 10px; text-align: left; line-height: 1.6;
+  }
+  .flow {
+    max-width: 1180px; margin: 48px auto 0; background: #fff;
+    border: 2px solid #d0d4da; border-radius: 16px; padding: 24px;
+  }
+  .flow-steps { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: center; margin-top: 14px; }
+  .flow-step {
+    background: #eef1ff; color: #3a56d4; font-size: 13px; font-weight: 600;
+    border-radius: 10px; padding: 10px 14px;
+  }
+  .arrow { color: #98a1ad; font-size: 16px; }
+</style>
+</head>
+<body>
+
+<h1>🌙 DailyMate — 개인 생산성 향상 에이전트</h1>
+<p class="subtitle">내가 쓴 일기를 에이전트가 읽고, 문맥을 파악해 질문하고, 더 풍부한 일기로 완성해준다<br>
+React Web · Copilot SDK + MS Agent Framework + MCP + Aspire + Azure</p>
+
+<div class="screens">
+
+  <!-- ① 메인 화면 -->
+  <div class="screen-wrap">
+    <div class="screen-label">① 메인 화면 (홈 대시보드)</div>
+    <div class="phone">
+      <div class="header">🌙 DailyMate <span class="sub">2026.08.22 (금) ⚙️</span></div>
+      <div class="body">
+        <div class="card solid" style="text-align:center;">
+          <div style="font-size:14px; font-weight:700; margin-bottom:4px;">👋 좋은 저녁이에요!</div>
+          <div style="font-size:12.5px; color:#78838f; margin-bottom:12px;">오늘 하루를 일기로 남겨볼까요?</div>
+          <div class="btn">✍️ 오늘 일기 쓰기</div>
+        </div>
+        <div>
+          <div class="section-title">📌 오늘 하기로 했던 일 (어제 등록)</div>
+          <div class="card solid">
+            <div class="schedule-item"><span class="checkbox">✅</span> 10:00 팀 스탠드업</div>
+            <div class="schedule-item"><span class="checkbox">☐</span> 15:00 치과 예약</div>
+          </div>
+        </div>
+        <div>
+          <div class="section-title">📊 이번 주 기록</div>
+          <div class="stat-row">
+            <div class="stat"><div class="emoji">📖</div><div class="label">일기</div><div class="value">5일</div></div>
+            <div class="stat"><div class="emoji">📝</div><div class="label">회의록</div><div class="value">3건</div></div>
+            <div class="stat"><div class="emoji">📅</div><div class="label">등록 일정</div><div class="value">7건</div></div>
+          </div>
+        </div>
+        <div>
+          <div class="section-title">📖 최근 일기</div>
+          <div class="card solid">
+            <div class="list-item"><span>08.21 "해커톤 준비로 바빴던 하루" 📷3</span><span>→</span></div>
+            <div class="list-item"><span>08.20 "카페에서 집중한 오후"</span><span>→</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tabbar">
+        <div class="tab active"><span class="icon">🏠</span>홈</div>
+        <div class="tab"><span class="icon">✍️</span>일기</div>
+        <div class="tab"><span class="icon">📊</span>기록</div>
+        <div class="tab"><span class="icon">🔗</span>연동</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② 일기 직접 작성 -->
+  <div class="screen-wrap">
+    <div class="screen-label">② 일기 직접 작성</div>
+    <div class="phone">
+      <div class="header">← 오늘의 일기 <span class="sub">2026.08.22 · 자동 저장 중</span></div>
+      <div class="body">
+        <div class="editor">
+          오늘은 아침에 <span class="highlight green">헬스장에서 운동</span>을 하고
+          출근했다. 점심에는 팀원들이랑
+          <span class="highlight blue">해커톤 기획 회의</span>를 했는데
+          아이디어가 많이 나와서 좋았다.
+          저녁에는 집에서 <span class="highlight">Azure 공부</span>를
+          좀 하다가 잤다. 내일도 바쁠 것 같다.<br><br>
+          <span class="placeholder">자유롭게 이어서 써보세요...</span>
+        </div>
+        <div class="hint">
+          <span><span class="dot" style="background:#a5d6a7;"></span> 운동 감지</span>
+          <span><span class="dot" style="background:#90caf9;"></span> 회의 감지</span>
+          <span><span class="dot" style="background:#ffd54f;"></span> 공부 감지</span>
+        </div>
+        <div class="enrich-note">
+          💡 에이전트가 일기 속 활동을 실시간으로 감지하고 있어요.<br>
+          작성을 마치면 감지된 내용을 바탕으로 질문을 드릴게요.
+        </div>
+        <div style="display:flex; gap:8px;">
+          <div class="btn gray small" style="flex:1;">📷 사진 첨부</div>
+          <div class="btn small" style="flex:2;">✅ 다 썼어요 — 에이전트와 대화하기</div>
+        </div>
+      </div>
+      <div class="tabbar">
+        <div class="tab"><span class="icon">🏠</span>홈</div>
+        <div class="tab active"><span class="icon">✍️</span>일기</div>
+        <div class="tab"><span class="icon">📊</span>기록</div>
+        <div class="tab"><span class="icon">🔗</span>연동</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ③ 에이전트 심화 질문 -->
+  <div class="screen-wrap">
+    <div class="screen-label">③ 에이전트 심화 질문 (문맥 기반)</div>
+    <div class="phone">
+      <div class="header">← 하루 깊이 들여다보기 <span class="sub">3개 주제 감지됨</span></div>
+      <div class="body chat-col">
+        <div class="msg agent">
+          <div class="quote">"헬스장에서 운동을 하고..."</div>
+          🤖 오늘 무슨 운동 하셨어요? 중량이나 세트 수도 알려주시면 기록해둘게요 💪
+        </div>
+        <div class="msg user">벤치프레스 80kg 5×5 했어! 지난주보다 5kg 올렸어</div>
+        <div class="msg agent">🤖 5kg 증량 축하해요! 🎉 운동 기록에 저장할게요.</div>
+        <div class="msg agent">
+          <div class="quote">"해커톤 기획 회의를 했는데..."</div>
+          🤖 어떤 내용의 회의였나요? 회의록이나 화이트보드 사진이 있으면 올려주세요 📝
+        </div>
+        <div class="msg user">에이전트 앱 기능 정하는 회의였어<br><span class="attach">📷 화이트보드.jpg</span></div>
+        <div class="msg agent">
+          <div class="quote">"Azure 공부를 좀 하다가..."</div>
+          🤖 어떤 부분을 공부하셨어요? 학습 기록으로 남겨드릴게요 📚
+        </div>
+        <div class="msg user">Container Apps 배포 방법 공부했어</div>
+        <div class="msg agent">🤖 오늘 하루 잘 정리됐어요! 그럼 <b>내일은 뭘 할 예정이에요?</b> 📅</div>
+        <div class="msg user">오전에 스탠드업 있고, 오후엔 해커톤 코딩. 저녁에 헬스장 갈까 생각중</div>
+        <div class="msg agent" style="max-width:94%;">
+          🤖 내일 일정을 정리했어요!
+          <div class="card solid" style="margin-top:8px;">
+            <div class="section-title">📅 08.23 (토) 일정 미리보기</div>
+            <div class="schedule-item"><span class="checkbox">☑</span> 10:00 팀 스탠드업 <span class="badge blue">확정</span></div>
+            <div class="schedule-item"><span class="checkbox">☑</span> 14:00 해커톤 코딩 <span class="badge blue">확정</span></div>
+            <div class="schedule-item"><span class="checkbox">☐</span> 19:00 헬스장 <span class="badge gray">미정</span></div>
+            <div style="display:flex; gap:8px; margin-top:10px;">
+              <div class="btn small">📅 Google Calendar 등록</div>
+              <div class="btn small gray">✏️ 수정</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="input-bar">
+        <span>📷</span><span>➕</span>
+        <div class="input-box">답변을 입력하세요...</div>
+        <div class="btn small">전송</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ④ 완성된 일기 -->
+  <div class="screen-wrap">
+    <div class="screen-label">④ 풍부해진 일기 완성 + 저장</div>
+    <div class="phone">
+      <div class="header">← 오늘의 일기 완성 <span class="sub">2026.08.22 · [저장]</span></div>
+      <div class="body">
+        <div class="msg agent" style="max-width:100%;">🤖 대화 내용으로 일기를 더 풍부하게 꾸몄어요! ✨</div>
+        <div class="card solid">
+          <div class="diary-title">📖 8월 22일 금요일</div>
+          <div class="diary-text">
+            오늘은 아침에 헬스장에서 운동을 하고 출근했다.
+            <b>벤치프레스 80kg 5×5 — 지난주보다 5kg 증량에 성공했다!</b> 💪<br><br>
+            점심에는 팀원들이랑 해커톤 기획 회의를 했다.
+            <b>에이전트 앱의 핵심 기능을 정하는 자리</b>였는데 아이디어가 많이 나와서 좋았다.<br><br>
+            저녁에는 집에서 <b>Azure Container Apps 배포 방법</b>을 공부했다.
+            내일도 바쁠 것 같다.
+          </div>
+          <div class="photo-strip">
+            <div class="photo">📷</div>
+            <div class="photo" style="flex:0 0 64px;">➕</div>
+          </div>
+          <div style="font-size:11px; color:#98a1ad; margin-top:4px; text-align:left;">화이트보드.jpg — 회의 문단에 자동 배치됨</div>
+          <div class="tags">#운동기록 #벤치프레스80kg #해커톤 #Azure공부</div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <div class="btn ghost small" style="flex:1;">🔄 다시 꾸미기</div>
+          <div class="btn gray small" style="flex:1;">✏️ 직접 수정</div>
+        </div>
+        <div class="card">
+          <div class="section-title">📋 함께 저장되는 기록 (MCP)</div>
+          <div class="extract-item">💪 운동: 벤치프레스 80kg 5×5 (+5kg)</div>
+          <div class="extract-item">📝 회의록: 해커톤 기능 기획 + 📷 1장</div>
+          <div class="extract-item">📚 학습: Azure Container Apps 배포</div>
+          <div class="extract-item">📅 내일 일정 2건 확정 · 1건 미정</div>
+          <div style="display:flex; gap:8px; margin-top:10px;">
+            <div class="btn small" style="flex:1;">📓 Notion 저장</div>
+            <div class="btn small ghost" style="flex:1;">📅 Calendar 동기화</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 사용자 플로우 -->
+<div class="flow">
+  <div class="section-title" style="text-align:center;">전체 사용자 플로우</div>
+  <div class="flow-steps">
+    <div class="flow-step">① 일기 직접 작성</div><span class="arrow">→</span>
+    <div class="flow-step">② 에이전트가 문맥 감지<br><small>(운동·회의·공부...)</small></div><span class="arrow">→</span>
+    <div class="flow-step">③ 주제별 심화 질문<br><small>(중량? 회의록? 공부 내용?)</small></div><span class="arrow">→</span>
+    <div class="flow-step">④ 내일 계획 질문<br><small>→ 일정 등록</small></div><span class="arrow">→</span>
+    <div class="flow-step">⑤ 일기 풍부화 완성<br><small>(사진 배치·내용 보강)</small></div><span class="arrow">→</span>
+    <div class="flow-step">⑥ MCP 저장<br><small>(Notion·Google Calendar)</small></div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+<Project Sdk="Aspire.AppHost.Sdk/13.5.2">
+
+  <ItemGroup>
+    <ProjectReference Include="..\src\DailyMate.Api\DailyMate.Api.csproj" />
+    <ProjectReference Include="..\src\DailyMate.Agent\DailyMate.Agent.csproj" />
+    <ProjectReference Include="..\src\DailyMate.McpTool\DailyMate.McpTool.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.JavaScript" Version="13.5.2" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AspireUseCliBundle>true</AspireUseCliBundle>
+    <UserSecretsId>95934071-dca2-4aa6-a175-543a380677c5</UserSecretsId>
+  </PropertyGroup>
+
+</Project>

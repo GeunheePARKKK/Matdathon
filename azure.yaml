@@ -1,0 +1,8 @@
+# azd 배포 설정 — Aspire AppHost 통합
+# 배포 절차: azd auth login → azd init(환경명) → azd provision → azd deploy
+name: dailymate
+services:
+  app:
+    language: dotnet
+    project: ./DailyMate.AppHost/DailyMate.AppHost.csproj
+    host: containerapp

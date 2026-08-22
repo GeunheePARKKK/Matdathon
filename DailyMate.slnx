@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/DailyMate.Agent/DailyMate.Agent.csproj" />
+    <Project Path="src/DailyMate.Api/DailyMate.Api.csproj" />
+    <Project Path="src/DailyMate.McpTool/DailyMate.McpTool.csproj" />
+  </Folder>
+  <Project Path="DailyMate.AppHost/DailyMate.AppHost.csproj" />
+  <Project Path="DailyMate.ServiceDefaults/DailyMate.ServiceDefaults.csproj" />
+</Solution>

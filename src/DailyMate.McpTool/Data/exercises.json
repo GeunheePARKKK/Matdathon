@@ -1,0 +1,61 @@
+{
+  "chest": [
+    { "name": "바벨 벤치 프레스", "type": "compound", "pattern": "horizontal_press", "equipment": "barbell", "joint_load": ["shoulder_front", "wrist"], "default": { "sets": 4, "reps": 8, "rpe": 8, "rest_sec": 120 }, "alternatives": ["머신 체스트 프레스", "덤벨 벤치 프레스"] },
+    { "name": "덤벨 벤치 프레스", "type": "compound", "pattern": "horizontal_press", "equipment": "dumbbell", "joint_load": ["shoulder_front"], "default": { "sets": 3, "reps": 10, "rpe": 7, "rest_sec": 90 }, "alternatives": ["머신 체스트 프레스"] },
+    { "name": "머신 체스트 프레스", "type": "compound", "pattern": "horizontal_press", "equipment": "machine", "joint_load": [], "default": { "sets": 3, "reps": 12, "rpe": 7, "rest_sec": 90 }, "alternatives": ["푸시업"] },
+    { "name": "인클라인 덤벨 프레스", "type": "compound", "pattern": "incline_press", "equipment": "dumbbell", "joint_load": ["shoulder_front"], "default": { "sets": 3, "reps": 10, "rpe": 7, "rest_sec": 90 }, "alternatives": ["인클라인 머신 프레스"] },
+    { "name": "인클라인 머신 프레스", "type": "compound", "pattern": "incline_press", "equipment": "machine", "joint_load": [], "default": { "sets": 3, "reps": 12, "rpe": 7, "rest_sec": 90 }, "alternatives": [] },
+    { "name": "케이블 플라이", "type": "isolation", "pattern": "fly", "equipment": "cable", "joint_load": [], "default": { "sets": 3, "reps": 15, "rpe": 7, "rest_sec": 60 }, "alternatives": ["펙덱 플라이"] },
+    { "name": "펙덱 플라이", "type": "isolation", "pattern": "fly", "equipment": "machine", "joint_load": [], "default": { "sets": 3, "reps": 15, "rpe": 7, "rest_sec": 60 }, "alternatives": ["케이블 플라이"] },
+    { "name": "케이블 크로스오버 (로우 투 하이)", "type": "isolation", "pattern": "fly", "equipment": "cable", "joint_load": [], "default": { "sets": 3, "reps": 12, "rpe": 7, "rest_sec": 60 }, "alternatives": ["케이블 플라이"] },
+    { "name": "딥스", "type": "compound", "pattern": "dip", "equipment": "bodyweight", "joint_load": ["shoulder_front", "elbow"], "default": { "sets": 3, "reps": 10, "rpe": 8, "rest_sec": 90 }, "alternatives": ["어시스트 딥스 머신"] },
+    { "name": "어시스트 딥스 머신", "type": "compound", "pattern": "dip", "equipment": "machine", "joint_load": ["shoulder_front"], "default": { "sets": 3, "reps": 12, "rpe": 6, "rest_sec": 90 }, "alternatives": [] },
+    { "name": "푸시업", "type": "compound", "pattern": "horizontal_press", "equipment": "bodyweight", "joint_load": ["wrist"], "default": { "sets": 2, "reps": 15, "rpe": 6, "rest_sec": 60 }, "alternatives": [] }
+  ],
+  "back": [
+    { "name": "데드리프트", "type": "compound", "pattern": "hinge", "equipment": "barbell", "joint_load": ["lower_back", "hamstring"], "default": { "sets": 4, "reps": 6, "rpe": 8, "rest_sec": 150 }, "alternatives": ["트랩바 데드리프트", "루마니안 데드리프트"] },
+    { "name": "풀업", "type": "compound", "pattern": "vertical_pull", "equipment": "bodyweight", "joint_load": ["shoulder_front", "elbow"], "default": { "sets": 3, "reps": 8, "rpe": 8, "rest_sec": 120 }, "alternatives": ["랫풀다운", "어시스트 풀업 머신"] },
+    { "name": "랫풀다운", "type": "compound", "pattern": "vertical_pull", "equipment": "machine", "joint_load": [], "default": { "sets": 3, "reps": 12, "rpe": 7, "rest_sec": 90 }, "alternatives": ["어시스트 풀업 머신"] },
+    { "name": "어시스트 풀업 머신", "type": "compound", "pattern": "vertical_pull", "equipment": "machine", "joint_load": [], "default": { "sets": 3, "reps": 10, "rpe": 6, "rest_sec": 90 }, "alternatives": ["랫풀다운"] },
+    { "name": "바벨 로우", "type": "compound", "pattern": "horizontal_pull", "equipment": "barbell", "joint_load": ["lower_back"], "default": { "sets": 3, "reps": 10, "rpe": 8, "rest_sec": 90 }, "alternatives": ["체스트 서포티드 로우"] },
+    { "name": "체스트 서포티드 로우", "type": "compound", "pattern": "horizontal_pull", "equipment": "machine", "joint_load": [], "default": { "sets": 3, "reps": 12, "rpe": 7, "rest_sec": 90 }, "alternatives": ["시티드 케이블 로우"] },
+    { "name": "시티드 케이블 로우", "type": "compound", "pattern": "horizontal_pull", "equipment": "cable", "joint_load": [], "default": { "sets": 3, "reps": 12, "rpe": 7, "rest_sec": 90 }, "alternatives": ["머신 로우"] },
+    { "name": "원암 덤벨 로우", "type": "compound", "pattern": "horizontal_pull", "equipment": "dumbbell", "joint_load": ["lower_back"], "default": { "sets": 3, "reps": 10, "rpe": 7, "rest_sec": 90 }, "alternatives": ["체스트 서포티드 로우"] },
+    { "name": "스트레이트암 풀다운", "type": "isolation", "pattern": "pullover", "equipment": "cable", "joint_load": ["shoulder_front"], "default": { "sets": 3, "reps": 15, "rpe": 6, "rest_sec": 60 }, "alternatives": ["랫풀다운"] },
+    { "name": "페이스 풀", "type": "isolation", "pattern": "rear_delt", "equipment": "cable", "joint_load": [], "default": { "sets": 3, "reps": 15, "rpe": 6, "rest_sec": 60 }, "alternatives": ["리버스 펙덱"] },
+    { "name": "백 익스텐션", "type": "isolation", "pattern": "hinge", "equipment": "bodyweight", "joint_load": ["lower_back"], "default": { "sets": 3, "reps": 15, "rpe": 6, "rest_sec": 60 }, "alternatives": [] }
+  ],
+  "shoulders": [
+    { "name": "오버헤드 프레스", "type": "compound", "pattern": "vertical_press", "equipment": "barbell", "joint_load": ["shoulder_front", "lower_back"], "default": { "sets": 4, "reps": 8, "rpe": 8, "rest_sec": 120 }, "alternatives": ["시티드 덤벨 프레스", "머신 숄더 프레스"] },
+    { "name": "시티드 덤벨 프레스", "type": "compound", "pattern": "vertical_press", "equipment": "dumbbell", "joint_load": ["shoulder_front"], "default": { "sets": 3, "reps": 10, "rpe": 7, "rest_sec": 90 }, "alternatives": ["머신 숄더 프레스"] },
+    { "name": "머신 숄더 프레스", "type": "compound", "pattern": "vertical_press", "equipment": "machine", "joint_load": ["shoulder_front"], "default": { "sets": 3, "reps": 12, "rpe": 7, "rest_sec": 90 }, "alternatives": ["사이드 레터럴 레이즈"] },
+    { "name": "사이드 레터럴 레이즈", "type": "isolation", "pattern": "lateral_raise", "equipment": "dumbbell", "joint_load": [], "default": { "sets": 4, "reps": 15, "rpe": 7, "rest_sec": 60 }, "alternatives": ["케이블 레터럴 레이즈", "머신 레터럴 레이즈"] },
+    { "name": "케이블 레터럴 레이즈", "type": "isolation", "pattern": "lateral_raise", "equipment": "cable", "joint_load": [], "default": { "sets": 3, "reps": 15, "rpe": 7, "rest_sec": 60 }, "alternatives": ["머신 레터럴 레이즈"] },
+    { "name": "머신 레터럴 레이즈", "type": "isolation", "pattern": "lateral_raise", "equipment": "machine", "joint_load": [], "default": { "sets": 3, "reps": 15, "rpe": 7, "rest_sec": 60 }, "alternatives": [] },
+    { "name": "리버스 펙덱", "type": "isolation", "pattern": "rear_delt", "equipment": "machine", "joint_load": [], "default": { "sets": 3, "reps": 15, "rpe": 7, "rest_sec": 60 }, "alternatives": ["벤트오버 레터럴 레이즈", "페이스 풀"] },
+    { "name": "벤트오버 레터럴 레이즈", "type": "isolation", "pattern": "rear_delt", "equipment": "dumbbell", "joint_load": ["lower_back"], "default": { "sets": 3, "reps": 15, "rpe": 6, "rest_sec": 60 }, "alternatives": ["리버스 펙덱"] },
+    { "name": "케이블 프론트 레이즈", "type": "isolation", "pattern": "front_raise", "equipment": "cable", "joint_load": ["shoulder_front"], "default": { "sets": 3, "reps": 12, "rpe": 6, "rest_sec": 60 }, "alternatives": [] },
+    { "name": "업라이트 로우 (케이블)", "type": "compound", "pattern": "upright_row", "equipment": "cable", "joint_load": ["shoulder_front", "wrist"], "default": { "sets": 3, "reps": 12, "rpe": 7, "rest_sec": 60 }, "alternatives": ["사이드 레터럴 레이즈"] },
+    { "name": "슈러그", "type": "isolation", "pattern": "shrug", "equipment": "dumbbell", "joint_load": [], "default": { "sets": 3, "reps": 15, "rpe": 7, "rest_sec": 60 }, "alternatives": [] }
+  ],
+  "legs": [
+    { "name": "바벨 백스쿼트", "type": "compound", "pattern": "squat", "equipment": "barbell", "joint_load": ["knee", "lower_back"], "default": { "sets": 4, "reps": 8, "rpe": 8, "rest_sec": 150 }, "alternatives": ["레그 프레스", "고블릿 스쿼트"] },
+    { "name": "고블릿 스쿼트", "type": "compound", "pattern": "squat", "equipment": "dumbbell", "joint_load": ["knee"], "default": { "sets": 3, "reps": 12, "rpe": 7, "rest_sec": 90 }, "alternatives": ["레그 프레스"] },
+    { "name": "레그 프레스", "type": "compound", "pattern": "squat", "equipment": "machine", "joint_load": ["knee"], "default": { "sets": 3, "reps": 12, "rpe": 7, "rest_sec": 120 }, "alternatives": [] },
+    { "name": "핵 스쿼트 머신", "type": "compound", "pattern": "squat", "equipment": "machine", "joint_load": ["knee"], "default": { "sets": 3, "reps": 10, "rpe": 7, "rest_sec": 120 }, "alternatives": ["레그 프레스"] },
+    { "name": "루마니안 데드리프트", "type": "compound", "pattern": "hinge", "equipment": "barbell", "joint_load": ["lower_back", "hamstring"], "default": { "sets": 3, "reps": 10, "rpe": 7, "rest_sec": 120 }, "alternatives": ["레그 컬"] },
+    { "name": "힙 쓰러스트", "type": "compound", "pattern": "hinge", "equipment": "barbell", "joint_load": [], "default": { "sets": 3, "reps": 12, "rpe": 7, "rest_sec": 90 }, "alternatives": ["힙 어브덕션 머신"] },
+    { "name": "런지", "type": "compound", "pattern": "lunge", "equipment": "dumbbell", "joint_load": ["knee"], "default": { "sets": 3, "reps": 10, "rpe": 7, "rest_sec": 90 }, "alternatives": ["레그 프레스"] },
+    { "name": "레그 익스텐션", "type": "isolation", "pattern": "knee_extension", "equipment": "machine", "joint_load": ["knee"], "default": { "sets": 3, "reps": 15, "rpe": 7, "rest_sec": 60 }, "alternatives": [] },
+    { "name": "레그 컬", "type": "isolation", "pattern": "knee_flexion", "equipment": "machine", "joint_load": [], "default": { "sets": 3, "reps": 15, "rpe": 7, "rest_sec": 60 }, "alternatives": [] },
+    { "name": "힙 어브덕션 머신", "type": "isolation", "pattern": "abduction", "equipment": "machine", "joint_load": [], "default": { "sets": 3, "reps": 15, "rpe": 6, "rest_sec": 45 }, "alternatives": [] },
+    { "name": "카프 레이즈", "type": "isolation", "pattern": "calf", "equipment": "machine", "joint_load": [], "default": { "sets": 4, "reps": 15, "rpe": 7, "rest_sec": 45 }, "alternatives": ["스탠딩 카프 레이즈"] }
+  ],
+  "core": [
+    { "name": "플랭크", "type": "isolation", "pattern": "anti_extension", "equipment": "bodyweight", "joint_load": [], "default": { "sets": 3, "reps": 1, "rpe": 6, "rest_sec": 60 }, "alternatives": [], "note": "reps=1은 60초 홀드" },
+    { "name": "케이블 크런치", "type": "isolation", "pattern": "flexion", "equipment": "cable", "joint_load": [], "default": { "sets": 3, "reps": 15, "rpe": 7, "rest_sec": 60 }, "alternatives": ["크런치"] },
+    { "name": "행잉 레그 레이즈", "type": "isolation", "pattern": "flexion", "equipment": "bodyweight", "joint_load": ["shoulder_front"], "default": { "sets": 3, "reps": 12, "rpe": 7, "rest_sec": 60 }, "alternatives": ["라잉 레그 레이즈"] },
+    { "name": "라잉 레그 레이즈", "type": "isolation", "pattern": "flexion", "equipment": "bodyweight", "joint_load": [], "default": { "sets": 3, "reps": 15, "rpe": 6, "rest_sec": 45 }, "alternatives": [] },
+    { "name": "팔로프 프레스", "type": "isolation", "pattern": "anti_rotation", "equipment": "cable", "joint_load": [], "default": { "sets": 3, "reps": 12, "rpe": 6, "rest_sec": 60 }, "alternatives": [] }
+  ]
+}
