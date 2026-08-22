@@ -44,7 +44,9 @@ src/web/                  # React UI (홈/일기작성/에이전트대화/완성
 src/DailyMate.Api/        # 일기·일정·통계·내보내기 REST API
 src/DailyMate.Agent/      # Triage/Interviewer/Writer/HealthCoach 에이전트 + MCP + SSE 채팅
 src/DailyMate.McpTool/    # 자체 MCP 서버 — 운동 툴 3종 (get_exercises/calc_intensity/build_routine)
-docs/                     # PRD.md · TRD.md
-agents.md                 # 에이전트 역할·바운더리 정의 (SSOT)
+docs/                     # wireframe.html
+PRD.md · TRD.md           # 제품·기술 요구사항 문서 (루트)
+AGENTS.md                 # 에이전트 역할·바운더리 정의 (SSOT)
 CLI_COMMAND_LOG.md        # Copilot CLI 작업 기록
 ```
+

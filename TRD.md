@@ -43,7 +43,7 @@
 ```
 
 ### 서비스 간 통신 (URL 하드코딩 금지)
-- `web → api/agent`: REST + SSE — 배포 시 [server.mjs](../src/web/server.mjs)가 Aspire가 주입한 서비스 디스커버리 env로 프록시
+- `web → api/agent`: REST + SSE — 배포 시 [server.mjs](src/web/server.mjs)가 Aspire가 주입한 서비스 디스커버리 env로 프록시
 - `agent → mcp-tool`: MCP streamable HTTP — `services:mcp-tool:*` 디스커버리 설정으로 엔드포인트 해석
 - `agent → LLM`: GitHub Copilot SDK (`CopilotClient`) — Copilot CLI 프로세스를 통해 모델 연결
 - `agent → 외부`: Notion/Calendar 클라이언트 (토큰 부재 시 Mock)
@@ -57,7 +57,7 @@
 ### 3.1 모델 연결 (Copilot SDK)
 - `CopilotClient(new CopilotClientOptions { UseLoggedInUser = true })` — 로컬은 로그인된 Copilot CLI 세션, 배포는 `GH_TOKEN` 환경 변수로 인증 (키 하드코딩 없음)
 - SDK 빌드 타겟이 copilot CLI 바이너리를 산출물에 번들 → 컨테이너 배포에서도 동일하게 동작
-- CLI 미탐지·초기화 실패 시 **Mock 모드로 자동 폴백** ([AgentRuntime.cs](../src/DailyMate.Agent/AgentRuntime.cs)) — 시연 안전장치
+- CLI 미탐지·초기화 실패 시 **Mock 모드로 자동 폴백** ([AgentRuntime.cs](src/DailyMate.Agent/AgentRuntime.cs)) — 시연 안전장치
 
 ### 3.2 에이전트 구성 (Agent Framework `AIAgent` 4종)
 | 에이전트 | 구현 | 역할 |
@@ -68,7 +68,7 @@
 | Health Coach | Triage 결과 → **MCP 툴 체인 오케스트레이션** | `get_exercises → calc_intensity → build_routine` 순차 호출 |
 
 ### 3.3 오케스트레이션·컨텍스트·스트리밍
-- **핸드오프**: 인터뷰 진행 중 루틴 요청 감지 → 헬스 코치로 위임 → 루틴 카드 반환 후 인터뷰 복귀 ([ChatOrchestrator.cs](../src/DailyMate.Agent/ChatOrchestrator.cs))
+- **핸드오프**: 인터뷰 진행 중 루틴 요청 감지 → 헬스 코치로 위임 → 루틴 카드 반환 후 인터뷰 복귀 ([ChatOrchestrator.cs](src/DailyMate.Agent/ChatOrchestrator.cs))
 - **컨텍스트 처리**: 대화 이력(history)을 트리아지 프롬프트에 포함 — 이전 턴의 통증/피로/선호가 후속 루틴에 누적 반영, fatigue→pain 승격 규칙
 - **스트리밍**: `/agent/chat`은 SSE(`text/event-stream`)로 토큰·이벤트 단위 전송 → 대기 체감 최소화
 - **하네스 엔지니어링**: 단계 전환·활동 감지·일정 파싱·강도 계산은 결정적 코드/MCP 툴이 담당, LLM은 자연어 이해·표현에 집중 → 환각 완화
@@ -118,7 +118,7 @@
 }
 ```
 - `is_warmup`, `estimated_minutes`는 optional 확장 필드
-- web은 [RoutineCard](../src/web/src/components/RoutineCard.tsx)로 렌더, Writer는 `diary_snippet`을 일기에 삽입
+- web은 [RoutineCard](src/web/src/components/RoutineCard.tsx)로 렌더, Writer는 `diary_snippet`을 일기에 삽입
 
 ### 5.2 데이터 모델 (api)
 ```typescript
@@ -181,7 +181,7 @@ interface DetectedSpan { start: number; end: number; type: "workout"|"meeting"|"
 > Azure AI/OpenAI는 사용하지 않는다 — LLM은 GitHub Copilot SDK로 연결 (심사 기준상 Azure AI 필수 아님).
 > 형식적 리소스 추가 금지 원칙: 위 3종 외 서비스는 추가하지 않는다.
 
-**반복 가능 배포** ([azure.yaml](../azure.yaml) — Aspire AppHost 통합):
+**반복 가능 배포** ([azure.yaml](azure.yaml) — Aspire AppHost 통합):
 ```bash
 azd auth login
 azd init          # 환경명 입력
@@ -219,7 +219,7 @@ DAILYMATE_LLM=off         # LLM 강제 비활성화 (빠른 목 모드 데모)
 | 시크릿 관리 | 전부 환경 변수 주입, 저장소 하드코딩 0건 (푸시 전 시크릿 스캔 수행) |
 | 사용자 확인 | 일정 등록·Notion 저장은 명시적 승인 후에만 실행 |
 | 환각 완화 | 강도 계산·일정 파싱·감지는 결정적 코드/MCP 툴, LLM 출력은 JSON 스키마 강제+검증 후 사용 |
-| 프롬프트 인젝션 대응 | 에이전트별 역할 바운더리(agents.md) + LLM 출력은 파싱 실패 시 폐기·폴백 |
+| 프롬프트 인젝션 대응 | 에이전트별 역할 바운더리(AGENTS.md) + LLM 출력은 파싱 실패 시 폐기·폴백 |
 | 의료 안전 | 의료 조언 금지, 통증 시 강도 하향 + 전문의 안내 |
 | AI 표시 | 에이전트 응답 UI 구분, `/agent/status`로 LLM/Mock 모드 투명 공개 |
 
@@ -235,3 +235,5 @@ DAILYMATE_LLM=off         # LLM 강제 비활성화 (빠른 목 모드 데모)
 | LLM 구조화 출력 불안정 | JSON 전용 인스트럭션 + 코드펜스 허용 파서 + 규칙 기반 트리아지 폴백 |
 | 활동 감지 오프셋 오류 (한글) | UTF-16 코드유닛 기준 오프셋 통일 |
 | 트래픽 이슈 | 서비스 4분리로 개별 scale-out, Container Apps 오토스케일 + 헬스체크 프로브 |
+
+
