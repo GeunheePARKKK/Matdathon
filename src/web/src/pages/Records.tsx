@@ -34,13 +34,11 @@ export default function Records() {
           <div className="card solid">
             {diaries.length === 0 && <div className="empty">아직 작성한 일기가 없어요</div>}
             {diaries.map((e) => (
-              <div key={e.date} className="list-item" onClick={() => nav(`/diary/${e.date}`)}>
-                <span>{e.date} "{e.rawContent.slice(0, 16)}{e.rawContent.length > 16 ? '…' : ''}"</span>
-                <button
-                  className="icon-btn"
-                  aria-label={`${e.date} 일기 삭제`}
-                  onClick={(ev) => { ev.stopPropagation(); removeDiary(e.date) }}
-                >
+              <div key={e.date} className="list-item as-row">
+                <button className="row-link" onClick={() => nav(`/diary/${e.date}`)} aria-label={`${e.date} 일기 보기`}>
+                  {e.date} "{e.rawContent.slice(0, 16)}{e.rawContent.length > 16 ? '…' : ''}"
+                </button>
+                <button className="icon-btn" aria-label={`${e.date} 일기 삭제`} onClick={() => removeDiary(e.date)}>
                   ✕
                 </button>
               </div>

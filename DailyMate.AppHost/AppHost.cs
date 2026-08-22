@@ -1,4 +1,9 @@
+using Aspire.Hosting.Azure;
+
 var builder = DistributedApplication.CreateBuilder(args);
+
+// GH_TOKEN은 Container Apps secret으로 배포 (평문 env 노출 방지) — 로컬은 환경 변수에서 주입
+var ghToken = builder.AddParameter("gh-token", Environment.GetEnvironmentVariable("GH_TOKEN") ?? "", secret: true);
 
 // mcp-tool: 헬스 코치용 MCP 서버 (get_exercises / calc_intensity / build_routine)
 var mcpTool = builder.AddProject<Projects.DailyMate_McpTool>("mcp-tool");
@@ -7,9 +12,7 @@ var mcpTool = builder.AddProject<Projects.DailyMate_McpTool>("mcp-tool");
 var agent = builder.AddProject<Projects.DailyMate_Agent>("agent")
     .WithReference(mcpTool)
     .WaitFor(mcpTool)
-    .WithEnvironment("GH_TOKEN", Environment.GetEnvironmentVariable("GH_TOKEN") ?? "")
-    .WithEnvironment("AZURE_OPENAI_ENDPOINT", Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT") ?? "")
-    .WithEnvironment("AZURE_OPENAI_KEY", Environment.GetEnvironmentVariable("AZURE_OPENAI_KEY") ?? "")
+    .WithEnvironment("GH_TOKEN", ghToken)
     .WithEnvironment("NOTION_MCP_TOKEN", Environment.GetEnvironmentVariable("NOTION_MCP_TOKEN") ?? "")
     .WithEnvironment("GOOGLE_CALENDAR_MCP_TOKEN", Environment.GetEnvironmentVariable("GOOGLE_CALENDAR_MCP_TOKEN") ?? "");
 
@@ -18,6 +21,30 @@ var api = builder.AddProject<Projects.DailyMate_Api>("api")
     .WithReference(agent)
     .WaitFor(agent)
     .WithExternalHttpEndpoints();
+
+// 배포(publish) 모드: 명시적 오토스케일 규칙
+if (builder.ExecutionContext.IsPublishMode)
+{
+    builder.AddAzureContainerAppEnvironment("cae");
+
+    // api: SQLite 파일 DB의 데이터 일관성을 위해 단일 레플리카 고정
+    api.PublishAsAzureContainerApp((_, app) =>
+    {
+        app.Template.Scale.MinReplicas = 1;
+        app.Template.Scale.MaxReplicas = 1;
+    });
+    // agent / mcp-tool: 무상태 — HTTP 동시성 기반 오토스케일
+    agent.PublishAsAzureContainerApp((_, app) =>
+    {
+        app.Template.Scale.MinReplicas = 1;
+        app.Template.Scale.MaxReplicas = 5;
+    });
+    mcpTool.PublishAsAzureContainerApp((_, app) =>
+    {
+        app.Template.Scale.MinReplicas = 1;
+        app.Template.Scale.MaxReplicas = 5;
+    });
+}
 
 // web: React + Vite UI
 // - 로컬(run): Vite 개발 서버로 실행

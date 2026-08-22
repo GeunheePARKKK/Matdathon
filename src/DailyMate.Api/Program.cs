@@ -153,6 +153,8 @@ app.MapGet("/api/diaries/{date}", async (string date, AppDbContext db) =>
 
 app.MapPost("/api/diaries", async (DiaryEntry entry, AppDbContext db) =>
 {
+    if (Validation.ValidateDiary(entry) is { } error)
+        return Results.BadRequest(new { message = error });
     var existing = await db.Diaries.FindAsync(entry.Date);
     var row = DiaryRow.FromDto(entry);
     if (existing is null) db.Diaries.Add(row);
@@ -163,6 +165,8 @@ app.MapPost("/api/diaries", async (DiaryEntry entry, AppDbContext db) =>
 
 app.MapPut("/api/diaries/{date}", async (string date, DiaryEntry entry, AppDbContext db) =>
 {
+    if (Validation.ValidateDiary(entry with { Date = date }) is { } error)
+        return Results.BadRequest(new { message = error });
     var existing = await db.Diaries.FindAsync(date);
     if (existing is null) return Results.NotFound();
     db.Entry(existing).CurrentValues.SetValues(DiaryRow.FromDto(entry with { Date = date }));
@@ -189,6 +193,8 @@ app.MapGet("/api/schedules", async (string? date, AppDbContext db) =>
 
 app.MapPost("/api/schedules", async (Schedule[] schedules, AppDbContext db) =>
 {
+    if (Validation.ValidateSchedules(schedules) is { } error)
+        return Results.BadRequest(new { message = error });
     foreach (var s in schedules)
     {
         if (string.IsNullOrEmpty(s.Id)) s.Id = Guid.NewGuid().ToString("N");

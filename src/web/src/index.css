@@ -150,9 +150,21 @@ body {
   font-size: 14px; padding: 12px 4px;
   border-bottom: 1px solid var(--rule-soft); color: var(--ink-soft);
   cursor: pointer;
+  /* button reset (list-item은 button 또는 row 컨테이너로 사용) */
+  background: none; border-left: none; border-right: none; border-top: none;
+  width: 100%; text-align: left; font-family: var(--sans);
 }
 .list-item:last-child { border-bottom: none; }
 .list-item:hover { color: var(--ink); }
+.list-item:focus-visible { outline: 2px solid var(--pen); outline-offset: 2px; }
+.list-item.as-row { cursor: default; padding: 0; }
+.row-link {
+  flex: 1; background: none; border: none; cursor: pointer;
+  font-size: 14px; padding: 12px 4px; color: var(--ink-soft);
+  text-align: left; font-family: var(--sans);
+}
+.row-link:hover { color: var(--ink); }
+.row-link:focus-visible { outline: 2px solid var(--pen); outline-offset: 2px; }
 
 /* ─── 탭바 ─── */
 .tabbar {

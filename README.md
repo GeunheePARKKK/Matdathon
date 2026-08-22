@@ -36,6 +36,20 @@ azd deploy          # ② 배포 실행 — AppHost가 서비스 토폴로지를
 - web은 [Dockerfile](src/web/Dockerfile)로 컨테이너화되며, [server.mjs](src/web/server.mjs)가 Aspire 서비스 디스커버리 env로 api/agent에 프록시
 - Aspire OTel → Azure Monitor 연동으로 관찰 가능성 확보
 
+## 테스트 · CI
+```bash
+dotnet test tests/DailyMate.Tests   # 단위 테스트 25건 (감지·일정파싱·풍부화·트리아지·검증·운동도구)
+```
+- GitHub Actions CI: push/PR 시 백엔드 빌드 + 테스트 + 웹 타입체크·빌드 자동 실행 (.github/workflows/ci.yml)
+- 배포 잡은 workflow_dispatch 수동 트리거 (AZURE_SUBSCRIPTION_ID secret 필요)
+
+## 운영 설계 노트
+- **오토스케일**: api는 SQLite 데이터 일관성을 위해 단일 레플리카 고정, agent/mcp-tool은 무상태로 1~5 오토스케일 (AppHost의 PublishAsAzureContainerApp)
+- **시크릿**: GH_TOKEN은 Aspire secret parameter → Container Apps secret으로 배포 (평문 env 노출 방지)
+- **데이터 영속성**: 데모 특성상 컨테이너 로컬 SQLite 사용 (재배포 시 초기화). 영속화가 필요하면 `DAILYMATE_DATA` 환경 변수를 Azure Files 마운트 경로로 지정
+- **레이트 리밋**: IP당 읽기 120/분, 쓰기·에이전트 30/분 (429 반환)
+- **입력 검증**: 일기·일정 쓰기 API는 서버측 스키마 검증 (형식·길이·개수 상한)
+
 ## 구조
 ```
 DailyMate.AppHost/        # Aspire 진입점 (web + api + agent + mcp-tool 오케스트레이션)

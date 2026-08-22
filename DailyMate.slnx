@@ -4,6 +4,9 @@
     <Project Path="src/DailyMate.Api/DailyMate.Api.csproj" />
     <Project Path="src/DailyMate.McpTool/DailyMate.McpTool.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DailyMate.Tests/DailyMate.Tests.csproj" />
+  </Folder>
   <Project Path="DailyMate.AppHost/DailyMate.AppHost.csproj" />
   <Project Path="DailyMate.ServiceDefaults/DailyMate.ServiceDefaults.csproj" />
 </Solution>

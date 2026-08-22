@@ -86,13 +86,13 @@ export default function Home() {
           <div className="card solid">
             {diaries.length === 0 && <div className="empty">아직 작성한 일기가 없어요</div>}
             {diaries.slice(0, 5).map((e) => (
-              <div key={e.date} className="list-item" onClick={() => nav(`/diary/${e.date}`)}>
+              <button key={e.date} className="list-item" onClick={() => nav(`/diary/${e.date}`)} aria-label={`${e.date} 일기 보기`}>
                 <span>
                   {e.date.slice(5).replace('-', '.')} "{e.rawContent.slice(0, 16)}{e.rawContent.length > 16 ? '…' : ''}"
                   {e.photos.length > 0 && ` 📷${e.photos.length}`}
                 </span>
-                <span>→</span>
-              </div>
+                <span aria-hidden="true">→</span>
+              </button>
             ))}
           </div>
         </div>

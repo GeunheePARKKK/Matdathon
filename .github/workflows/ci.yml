@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: src/web/package-lock.json
+
+      - name: Restore & build backend
+        run: dotnet build --configuration Release
+
+      - name: Run tests
+        run: dotnet test tests/DailyMate.Tests --configuration Release --no-build --verbosity normal
+
+      - name: Build web
+        working-directory: src/web
+        run: |
+          npm ci
+          npx tsc -b
+          npm run build
+
+  # 배포는 수동 트리거 (리포지토리에 AZURE_SUBSCRIPTION_ID secret + AZURE_ENV_NAME/AZURE_LOCATION vars 필요)
+  deploy:
+    if: github.event_name == 'workflow_dispatch'
+    needs: build-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install azd
+        uses: Azure/setup-azd@v2
+      - name: Deploy
+        run: azd up --no-prompt
+        env:
+          AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
+          AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
