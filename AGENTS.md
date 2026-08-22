@@ -1,6 +1,6 @@
 # 🤖 agents.md — DailyMate 에이전트 동작 범위 정의
 
-> 이 문서는 DailyMate의 모든 AI 에이전트의 역할, 바운더리, 프로세스, 도구 사용법을 정의한다.
+> 이 문서는 DailyMate의 AI 에이전트 3종(Triage/Interviewer/Writer)과 Health Coach 오케스트레이터의 역할, 바운더리, 프로세스, 도구 사용법을 정의한다.
 > 모든 에이전트 인스트럭션은 이 문서를 단일 진실 공급원(SSOT)으로 삼는다.
 > 코드 반영: [AgentDefinitions.cs](src/DailyMate.Agent/AgentDefinitions.cs) · [AgentRuntime.cs](src/DailyMate.Agent/AgentRuntime.cs)
 
@@ -210,3 +210,4 @@ Triage 결과를 받아 mcp-tool 서버의 MCP 툴 3종을 **순서대로 호출
 
 - 각 상태에서 허용되는 에이전트: 작성 중=Detector / 인터뷰=Interviewer(+Triage/Health Coach) / 작성=Writer
 - 상태를 벗어난 에이전트 호출은 api 레벨에서 거부한다.
+

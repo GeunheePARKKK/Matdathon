@@ -59,13 +59,13 @@
 - SDK 빌드 타겟이 copilot CLI 바이너리를 산출물에 번들 → 컨테이너 배포에서도 동일하게 동작
 - CLI 미탐지·초기화 실패 시 **Mock 모드로 자동 폴백** ([AgentRuntime.cs](src/DailyMate.Agent/AgentRuntime.cs)) — 시연 안전장치
 
-### 3.2 에이전트 구성 (Agent Framework `AIAgent` 4종)
+### 3.2 에이전트 구성 — MAF `AIAgent` 3종(Triage/Interviewer/Writer) + Health Coach(MCP 툴 오케스트레이터 서비스)
 | 에이전트 | 구현 | 역할 |
 |---|---|---|
 | Triage | `GitHubCopilotAgent` + JSON 강제 인스트럭션 | 운동 발화 분류 + 컨디션 파라미터 추출 (규칙 기반 `MockTriage` 폴백) |
 | Interviewer | `GitHubCopilotAgent` + **tool calling** | 주제별 심화 질문 — `parse_schedule`, `list_topics` AIFunction 도구 호출 |
 | Writer | `GitHubCopilotAgent` + tool calling | 일기 풍부화 — `draft_enrichment` 도구로 결정적 초안 참고 |
-| Health Coach | Triage 결과 → **MCP 툴 체인 오케스트레이션** | `get_exercises → calc_intensity → build_routine` 순차 호출 |
+| Health Coach (서비스) | Triage 결과 → **MCP 툴 체인 오케스트레이션** (AIAgent 아님 — 결정적 서비스) | `get_exercises → calc_intensity → build_routine` 순차 호출 |
 
 ### 3.3 오케스트레이션·컨텍스트·스트리밍
 - **핸드오프**: 인터뷰 진행 중 루틴 요청 감지 → 헬스 코치로 위임 → 루틴 카드 반환 후 인터뷰 복귀 ([ChatOrchestrator.cs](src/DailyMate.Agent/ChatOrchestrator.cs))
@@ -235,5 +235,7 @@ DAILYMATE_LLM=off         # LLM 강제 비활성화 (빠른 목 모드 데모)
 | LLM 구조화 출력 불안정 | JSON 전용 인스트럭션 + 코드펜스 허용 파서 + 규칙 기반 트리아지 폴백 |
 | 활동 감지 오프셋 오류 (한글) | UTF-16 코드유닛 기준 오프셋 통일 |
 | 트래픽 이슈 | 서비스 4분리로 개별 scale-out, Container Apps 오토스케일 + 헬스체크 프로브 |
+
+
 
 

@@ -43,7 +43,7 @@
 |---|---|---|
 | R1 | 웹 앱으로 개발 | ✅ React + Vite (모바일 우선 반응형) |
 | R2 | GitHub Copilot SDK 사용 | ✅ `GitHub.Copilot.SDK` — CopilotClient로 모델 연결 |
-| R3 | Microsoft Agent Framework 사용 | ✅ `Microsoft.Agents.AI.GitHub.Copilot` — AIAgent 4종 |
+| R3 | Microsoft Agent Framework 사용 | ✅ `Microsoft.Agents.AI.GitHub.Copilot` — AIAgent 3종 + MCP 오케스트레이터 |
 | R4 | Azure 클라우드 배포 | ✅ azd + Aspire → Azure Container Apps |
 | R5 | **로그인/인증 기능 구현 금지** | ✅ 무로그인, 로컬 세션 기반 |
 | R6 | 분산 클라우드 환경(트래픽) 고려 | ✅ Aspire 서비스 분리·헬스체크·OTel |
@@ -164,4 +164,5 @@
 - **의료 안전**: 의료 조언 금지, 통증 시 강도 하향 + 전문의 안내 문구
 - **환각 완화**: 루틴 계산·일정 파싱 등 결정적 작업은 MCP 툴/코드가 수행하고 LLM은 해석·표현만 담당
 - **개인정보**: 무로그인 로컬 세션, 외부 전송은 사용자가 명시적으로 연동한 MCP에 한정
+
 
