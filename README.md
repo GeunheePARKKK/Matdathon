@@ -30,7 +30,7 @@ DAILYMATE_LLM=off         # LLM 강제 비활성화 (데모 시 빠른 목 모�
 ```bash
 azd auth login
 azd init            # 환경 이름 입력 (예: dailymate-prod)
-azd provision       # ① 배포 계획·검증 — Container Apps ×3, ACR, Log Analytics 생성
+azd provision       # ① 배포 계획·검증 — Container Apps ×4, ACR, Log Analytics 생성
 azd deploy          # ② 배포 실행 — AppHost가 서비스 토폴로지를 컨테이너로 변환
 ```
 - web은 [Dockerfile](src/web/Dockerfile)로 컨테이너화되며, [server.mjs](src/web/server.mjs)가 Aspire 서비스 디스커버리 env로 api/agent에 프록시
@@ -38,11 +38,13 @@ azd deploy          # ② 배포 실행 — AppHost가 서비스 토폴로지를
 
 ## 구조
 ```
-DailyMate.AppHost/        # Aspire 진입점 (web + api + agent 오케스트레이션)
+DailyMate.AppHost/        # Aspire 진입점 (web + api + agent + mcp-tool 오케스트레이션)
 DailyMate.ServiceDefaults/# OTel · 헬스체크 · 리질리언스 공통
-src/web/                  # React UI (홈/일기작성/에이전트대화/완성/기록/연동)
+src/web/                  # React UI (홈/일기작성/에이전트대화/완성/기록/연동 + 루틴 카드)
 src/DailyMate.Api/        # 일기·일정·통계·내보내기 REST API
-src/DailyMate.Agent/      # Detector/Interviewer/Writer 에이전트 + MCP + SSE 채팅
-docs/                     # PRD.md · TRD.md · wireframe.html
+src/DailyMate.Agent/      # Triage/Interviewer/Writer/HealthCoach 에이전트 + MCP + SSE 채팅
+src/DailyMate.McpTool/    # 자체 MCP 서버 — 운동 툴 3종 (get_exercises/calc_intensity/build_routine)
+docs/                     # PRD.md · TRD.md
 agents.md                 # 에이전트 역할·바운더리 정의 (SSOT)
+CLI_COMMAND_LOG.md        # Copilot CLI 작업 기록
 ```
